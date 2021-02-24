@@ -5,9 +5,9 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
-import { OrmConfig } from '@ioc:Adonis/Lucid/Orm'
-import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
+import Env from "@ioc:Adonis/Core/Env";
+import { OrmConfig } from "@ioc:Adonis/Lucid/Orm";
+import { DatabaseConfig } from "@ioc:Adonis/Lucid/Database";
 
 const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   /*
@@ -20,7 +20,7 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   | file.
   |
   */
-  connection: Env.get('DB_CONNECTION'),
+  connection: Env.get("DB_CONNECTION"),
 
   connections: {
     /*
@@ -35,12 +35,11 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
     |
     */
     pg: {
-      client: 'pg',
-      connection: Env.get('DATABASE_URL'),
+      client: "pg",
+      connection: Env.get("DATABASE_URL"),
       healthCheck: false,
       debug: false,
     },
-
   },
 
   /*
@@ -55,8 +54,7 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   | - Or define a custom function to compute the primary key for a given model.
   |
   */
-  orm: {
-  },
-}
+  orm: {},
+};
 
-export default databaseConfig
+export default databaseConfig;

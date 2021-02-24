@@ -18,18 +18,20 @@
 |
 */
 
-import Route from '@ioc:Adonis/Core/Route'
-import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
+import Route from "@ioc:Adonis/Core/Route";
+import HealthCheck from "@ioc:Adonis/Core/HealthCheck";
+import EventController from "App/Controllers/Http/EventsController";
 
-Route.get('/', async () => {
-  return { hello: 'world' }
-})
+Route.get("/", async () => {
+  return { hello: "world" };
+});
 
+Route.get("events", new EventController().index);
+Route.post("event", new EventController().create);
 
-Route.get('health', async ({ response }) => {
-  const report = await HealthCheck.getReport()
+Route.get("health", async ({ response }) => {
+  const report = await HealthCheck.getReport();
 
-  return report.healthy
-    ? response.ok(report)
-    : response.badRequest(report)
-})
+  return report.healthy ? response.ok(report) : response.badRequest(report);
+  // return response.badRequest(report);
+});
