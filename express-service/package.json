@@ -1,18 +1,28 @@
 {
-  "name": "app",
+  "name": "project-bright-red-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1"
+    "build": "node ace build --production",
+    "start": "node server.js",
+    "dev": "node ace serve --watch",
+    "lint": "eslint . --ext=.ts"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "@adonisjs/assembler": "^3.0.6",
+    "adonis-preset-ts": "^2.0.0",
+    "eslint": "^7.20.0",
+    "eslint-plugin-adonis": "^1.2.1",
+    "pino-pretty": "^4.5.0",
+    "typescript": "^4.1.5",
+    "youch": "^2.1.1",
+    "youch-terminal": "^1.0.1"
+  },
+  "dependencies": {
+    "@adonisjs/core": "^5.0.4-preview-rc-2.1",
+    "@adonisjs/repl": "^1.1.6",
+    "proxy-addr": "^2.0.6",
+    "reflect-metadata": "^0.1.13",
+    "source-map-support": "^0.5.19"
   }
 }

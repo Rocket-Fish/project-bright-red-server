@@ -6,7 +6,7 @@ services:
     volumes:
       - ./express-service:/usr/src/app/
     ports:
-      - "3000:3000"
+      - "3333:3333"
     depends_on:
       - postgres
     environment:
