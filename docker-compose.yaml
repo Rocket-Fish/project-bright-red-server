@@ -1,0 +1,21 @@
+version: '3'
+services:
+  app:
+    build: express-service
+    command: npm run dev
+    volumes:
+      - ./express-service:/usr/src/app/
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://project-bright-red-user:project-bright-red-pwd@postgres/project-bright-red-db
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: project-bright-red-user
+      POSTGRES_DB: project-bright-red-db
+      POSTGRES_PASSWORD: project-bright-red-pwd
+    volumes:
+      - /var/lib/postgresql/data
