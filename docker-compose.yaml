@@ -10,12 +10,14 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgres://project-bright-red-user:project-bright-red-pwd@postgres/project-bright-red-db
+      DATABASE_URL: postgres://project-bright-red-user:project-bright-red-pwd@postgres:5432/project-bright-red-db
   postgres:
     image: postgres
     environment:
-      POSTGRES_USER: project-bright-red-user
       POSTGRES_DB: project-bright-red-db
+      POSTGRES_USER: project-bright-red-user
       POSTGRES_PASSWORD: project-bright-red-pwd
+    ports: 
+      - "5432:5432"
     volumes:
       - /var/lib/postgresql/data
