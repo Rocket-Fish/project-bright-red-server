@@ -12,7 +12,7 @@ export default class EventsController {
     const validated = await request.validate({
       schema: schema.create({
         name: schema.string({ escape: true, trim: true }, [
-          rules.maxLength(24),
+          rules.maxLength(50),
         ]),
         numberOfParties: schema.enum([1, 3, 6, 7] as const),
         maxPlayersInQueue: schema.number([rules.range(8, 128)]),
