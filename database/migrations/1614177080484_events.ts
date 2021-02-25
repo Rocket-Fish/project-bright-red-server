@@ -5,7 +5,7 @@ export default class Events extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments("id");
+      table.increments("id").primary();
       table.string("name").notNullable();
       table.integer("number_of_parties").notNullable();
       table.integer("max_players_in_queue").notNullable();

@@ -1,16 +1,16 @@
 version: "3"
 services:
-  # app:
-  #   build: .
-  #   command: npm run dev
-  #   volumes:
-  #     - .:/usr/src/app/
-  #   ports:
-  #     - "3333:3333"
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     DATABASE_URL: postgres://project-bright-red-user:project-bright-red-pwd@postgres:5432/project-bright-red-db
+  app:
+    build: .
+    command: npm run dev
+    volumes:
+      - /usr/src/app/
+    ports:
+      - "3333:3333"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://project-bright-red-user:project-bright-red-pwd@postgres:5432/project-bright-red-db
   postgres:
     image: postgres
     environment:

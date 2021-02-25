@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
+import Candidate from "./Candidate";
 
 export default class Event extends BaseModel {
   public static table = "events";
-  public static selfAssignPrimaryKey = true;
 
   @column({ isPrimary: true })
   public id: number;
@@ -25,6 +25,11 @@ export default class Event extends BaseModel {
 
   @column()
   public timeZone: string;
+
+  @hasMany(() => Candidate, {
+    foreignKey: "forEvent",
+  })
+  public queue: HasMany<typeof Candidate>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
