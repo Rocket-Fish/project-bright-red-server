@@ -1,4 +1,5 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 import Event from "App/Models/Event";
 
@@ -8,7 +9,7 @@ export default class EventsController {
     return events;
   }
 
-  public async create({ request }) {
+  public async create({ request }: HttpContextContract) {
     const validated = await request.validate({
       schema: schema.create({
         name: schema.string({ escape: true, trim: true }, [

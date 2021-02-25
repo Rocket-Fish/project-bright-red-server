@@ -21,6 +21,7 @@
 import Route from "@ioc:Adonis/Core/Route";
 import HealthCheck from "@ioc:Adonis/Core/HealthCheck";
 import EventController from "App/Controllers/Http/EventsController";
+import AuthController from "App/Controllers/Http/AuthController";
 
 Route.get("/", async () => {
   return { hello: "world" };
@@ -35,3 +36,6 @@ Route.get("health", async ({ response }) => {
   return report.healthy ? response.ok(report) : response.badRequest(report);
   // return response.badRequest(report);
 });
+
+Route.post("/register", new AuthController().register);
+Route.post("/login", new AuthController().login);
