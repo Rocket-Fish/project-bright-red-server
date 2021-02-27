@@ -9,7 +9,14 @@ export default class EventsController {
     return events;
   }
 
-  public async create({ request }: HttpContextContract) {
+  public async create({ request, response, auth }: HttpContextContract) {
+    await auth.authenticate();
+    const user = auth.user;
+    if (!user) {
+      return response.badRequest({
+        errors: [{ message: "JWT provided invalid username" }],
+      });
+    }
     const validated = await request.validate({
       schema: schema.create({
         name: schema.string({ escape: true, trim: true }, [
@@ -22,7 +29,10 @@ export default class EventsController {
         timeZone: schema.string(),
       }),
     });
-    const event = await Event.create(validated);
+    const event = await Event.create({
+      ...validated,
+      organizerId: user.$attributes.id,
+    });
     return event;
   }
 }
