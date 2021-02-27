@@ -31,6 +31,9 @@ export default class Event extends BaseModel {
   })
   public queue: HasMany<typeof Candidate>;
 
+  @column()
+  public organizerId: number;
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
 

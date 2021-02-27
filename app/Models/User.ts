@@ -8,6 +8,7 @@ import {
   HasMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import Candidate from "./Candidate";
+import Event from "./Event";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -26,7 +27,12 @@ export default class User extends BaseModel {
   public rememberMeToken?: string;
 
   @hasMany(() => Candidate)
-  public candidates: HasMany<typeof Candidate>;
+  public candidacy: HasMany<typeof Candidate>; // candidates are basically Q positions
+
+  @hasMany(() => Event, {
+    foreignKey: "organizerId",
+  })
+  public organizedEvents: HasMany<typeof Event>; // events which this person organized (is admin for)
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
