@@ -4,7 +4,8 @@ services:
     build: .
     command: npm run dev
     volumes:
-      - /usr/src/app/
+      - app:/adonis
+      - nodemodules:/adonis/node_modules
     ports:
       - "3333:3333"
     depends_on:
@@ -13,6 +14,7 @@ services:
       DATABASE_URL: postgres://project-bright-red-user:project-bright-red-pwd@postgres:5432/project-bright-red-db
   postgres:
     image: postgres
+    restart: always
     environment:
       POSTGRES_DB: project-bright-red-db
       POSTGRES_USER: project-bright-red-user
@@ -20,4 +22,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /var/lib/postgresql/data
+      - data:/var/lib/postgresql/data/
+volumes:
+  data: {}
+  app: {}
+  nodemodules: {}
