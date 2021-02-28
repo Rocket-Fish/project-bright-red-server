@@ -14,6 +14,12 @@ export default class Party extends BaseModel {
   @hasMany(() => Candidate)
   public candidates: HasMany<typeof Candidate>;
 
+  @column()
+  public eventId: number;
+
+  @column()
+  public partyNumber: number;
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
 

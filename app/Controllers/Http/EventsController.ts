@@ -3,8 +3,8 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 import Event from "App/Models/Event";
 import uniqueString from "unique-string";
-import { Request } from "@adonisjs/core/build/standalone";
 import User from "App/Models/User";
+import Party from "App/Models/Party";
 
 export default class EventsController {
   public async index() {
@@ -36,11 +36,23 @@ export default class EventsController {
         timeZone: schema.string(),
       }),
     });
-    const event = await Event.create({
+    const event = await user.related("organizedEvents").create({
       ...validated,
-      organizerId: user.id,
       url: uniqueString(),
     });
+    const partiesToBeCreated = [] as Party[];
+    for (
+      let partyNumber = 1;
+      partyNumber <= validated.numberOfParties;
+      partyNumber++
+    ) {
+      partiesToBeCreated.push({
+        partyNumber,
+        partyComp: `["tank", "tank", "healer", "healer", "melee", "melee", "ranged", "caster"]`, // hard coded value TODO: change later
+      } as Party);
+    }
+    await event.related("parties").createMany(partiesToBeCreated);
+
     return event.serialize({ fields: ["url"] });
   }
 
@@ -53,6 +65,7 @@ export default class EventsController {
     const event = await Event.query()
       .where("url", url)
       .preload("queue")
+      .preload("parties")
       .first();
     if (!!event) {
       const organizer = await User.find(event.organizerId);

@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { BaseModel, column, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
 import Candidate from "./Candidate";
+import Party from "./Party";
 
 export default class Event extends BaseModel {
   public static table = "events";
@@ -30,6 +31,9 @@ export default class Event extends BaseModel {
     foreignKey: "forEvent",
   })
   public queue: HasMany<typeof Candidate>;
+
+  @hasMany(() => Party, { foreignKey: "eventId" })
+  public parties: HasMany<typeof Party>;
 
   @column()
   public organizerId: number;
