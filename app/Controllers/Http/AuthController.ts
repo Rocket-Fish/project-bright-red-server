@@ -28,7 +28,7 @@ export default class AuthController {
     const token = await auth
       .use("api")
       .attempt(username, password, { expiresIn: "14 days" });
-    return token.toJSON();
+    return { ...token.toJSON(), id: user.id };
   }
   public async login({ request, auth }: HttpContextContract) {
     const username = request.input("username");
@@ -36,6 +36,6 @@ export default class AuthController {
     const token = await auth
       .use("api")
       .attempt(username, password, { expiresIn: "14 days" });
-    return token.toJSON();
+    return { ...token.toJSON() };
   }
 }

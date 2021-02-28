@@ -9,6 +9,6 @@ export default class Role extends BaseModel {
   })
   public subroles: HasMany<typeof Role>;
 
-  @column()
+  @column({ serializeAs: null })
   public isSubroleOf: string;
 }

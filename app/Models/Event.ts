@@ -34,6 +34,9 @@ export default class Event extends BaseModel {
   @column()
   public organizerId: number;
 
+  @column()
+  public url: string;
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
 

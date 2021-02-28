@@ -7,13 +7,17 @@ export default class RoleSeeder extends BaseSeeder {
 
   public async run() {
     // Write your database queries inside the run method
-    await Role.createMany([
-      { name: "tank" },
-      { name: "healer" },
-      { name: "dps" },
-      { name: "melee", isSubroleOf: "dps" },
-      { name: "ranged", isSubroleOf: "dps" },
-      { name: "caster", isSubroleOf: "dps" },
-    ]);
+    try {
+      await Role.createMany([
+        { name: "tank" },
+        { name: "healer" },
+        { name: "dps" },
+        { name: "melee", isSubroleOf: "dps" },
+        { name: "ranged", isSubroleOf: "dps" },
+        { name: "caster", isSubroleOf: "dps" },
+      ]);
+    } catch (e) {
+      console.log("batch 1 already exists");
+    }
   }
 }
