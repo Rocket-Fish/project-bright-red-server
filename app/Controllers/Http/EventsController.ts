@@ -5,6 +5,7 @@ import Event from "App/Models/Event";
 import uniqueString from "unique-string";
 import User from "App/Models/User";
 import Party from "App/Models/Party";
+import { DateTime } from "luxon";
 
 export default class EventsController {
   public async index() {
@@ -31,7 +32,10 @@ export default class EventsController {
         ]),
         numberOfParties: schema.enum([1, 3, 6, 7] as const),
         maxPlayersInQueue: schema.number([rules.range(8, 128)]),
-        eventTime: schema.date({}, [rules.after(1, "second")]),
+        eventTime: schema.date({}, [
+          rules.after(1, "second"),
+          rules.beforeField(DateTime.utc().plus({ days: 14 }).toISO()),
+        ]),
         autoFormParty: schema.boolean(),
         timeZone: schema.string(),
       }),
@@ -48,7 +52,16 @@ export default class EventsController {
     ) {
       partiesToBeCreated.push({
         partyNumber,
-        partyComp: `["tank", "tank", "healer", "healer", "melee", "melee", "ranged", "caster"]`, // hard coded value TODO: change later
+        partyComp: JSON.stringify([
+          "tank",
+          "tank",
+          "healer",
+          "healer",
+          "melee",
+          "melee",
+          "ranged",
+          "caster",
+        ]), // hard coded value TODO: change later
       } as Party);
     }
     await event.related("parties").createMany(partiesToBeCreated);
@@ -85,7 +98,7 @@ export default class EventsController {
         return { ...event.toJSON(), organizer: serialized };
       }
     }
-    return response.notFound({ errors: [{ message: "Not Found" }] });
+    return response.notFound({ errors: [{ code: 404, message: "Not Found" }] });
   }
 
   public async myEvents(context: HttpContextContract) {

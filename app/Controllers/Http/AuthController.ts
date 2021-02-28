@@ -38,4 +38,11 @@ export default class AuthController {
       .attempt(username, password, { expiresIn: "14 days" });
     return { ...token.toJSON() };
   }
+
+  // public async doSomething(){
+  // // forUpdate() is important because it locks the row until save
+  // await User.query().where('id', 1).forUpdate().firstOrFail();
+  // user.username = 'asdf'
+  // awit user.save();
+  // }
 }

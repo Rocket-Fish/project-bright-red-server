@@ -27,14 +27,13 @@ Route.get("/", async () => {
 
 // events
 Route.get("events/all", "EventsController.index"); // TODO: comment out for dev/admin use only
-Route.post("event", "EventsController.create");
-Route.get("event", "EventsController.getEvent");
 Route.get("events/mine", "EventsController.myEvents");
+Route.get("event", "EventsController.getEvent");
+Route.post("event", "EventsController.create");
 
-Route.get("event/queue", async ({ response }) => response.ok({ todo: "WIP" }));
-Route.post("event/queue", async ({ response }) => response.ok({ todo: "WIP" }));
-
-Route.get("event/party", async ({ response }) => response.ok({ todo: "WIP" }));
+Route.get("event/queue", "QueuesController.status"); // queue status
+Route.post("event/queue", "QueuesController.join"); // register queue
+Route.delete("event/queue", "QueuesController.leave"); // remove self from quue
 
 // auth
 Route.post("/register", "AuthController.register");
