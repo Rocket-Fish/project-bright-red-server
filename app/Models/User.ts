@@ -26,12 +26,11 @@ export default class User extends BaseModel {
   @column({ serializeAs: null })
   public rememberMeToken?: string;
 
-  @hasMany(() => Candidate, { serializeAs: null })
+  @hasMany(() => Candidate)
   public candidacy: HasMany<typeof Candidate>; // candidates are basically Q positions
 
   @hasMany(() => Event, {
     foreignKey: "organizerId",
-    serializeAs: null,
   })
   public organizedEvents: HasMany<typeof Event>; // events which this person organized (is admin for)
 

@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
 import User from "./User";
+import Event from "./Event";
 
 export default class Candidate extends BaseModel {
   @column({ isPrimary: true })
@@ -8,6 +9,11 @@ export default class Candidate extends BaseModel {
 
   @column()
   public forEvent: number;
+
+  @belongsTo(() => Event, {
+    foreignKey: "forEvent",
+  })
+  public event: BelongsTo<typeof Event>;
 
   @column()
   public roles: string; // this would contain an array like [tank, tank, healer, healer, melee, melee, ranged, caster]

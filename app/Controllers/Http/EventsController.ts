@@ -93,7 +93,16 @@ export default class EventsController {
     if (!user) return this.returnInvalidUser(context);
 
     await user.preload("organizedEvents");
+    const fullUserObject = await User.query()
+      .where("id", user.id)
+      .preload("candidacy", (query) =>
+        query.preload("event", (query) => query.preload("organizer"))
+      )
+      .preload("organizedEvents", (query) => query.preload("organizer"))
+      .firstOrFail();
+    const { organizedEvents, candidacy } = fullUserObject;
+    const participatingEvents = candidacy.map((c) => c.event);
 
-    return user.organizedEvents;
+    return { organizedEvents, participatingEvents };
   }
 }
