@@ -10,7 +10,6 @@ export default class Events extends BaseSchema {
       table.integer("number_of_parties").notNullable();
       table.integer("max_players_in_queue").notNullable();
       table.dateTime("event_time").notNullable();
-      table.boolean("auto_form_party").notNullable();
       table.string("time_zone").notNullable();
 
       table.timestamps(true);

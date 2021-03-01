@@ -34,10 +34,12 @@ Route.post("event", "EventsController.create");
 Route.get("event/queue", "QueuesController.status"); // queue status
 Route.post("event/queue", "QueuesController.join"); // register queue
 Route.delete("event/queue", "QueuesController.leave"); // remove self from quue
+Route.post("event/party", "EventsController.formParty");
 
 // auth
-Route.post("/register", "AuthController.register");
-Route.post("/login", "AuthController.login");
+Route.post("register", "AuthController.register");
+Route.post("login", "AuthController.login");
+Route.post("check", "AuthController.authCheck");
 
 // roles
 Route.get("/roles", "RolesController.index");

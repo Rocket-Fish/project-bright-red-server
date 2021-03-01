@@ -39,8 +39,15 @@ export default class AuthController {
     return { ...token.toJSON() };
   }
 
+  public async authCheck({ response, auth }: HttpContextContract) {
+    await auth.authenticate();
+    return response.ok("OK");
+  }
+
   // public async doSomething(){
   // // forUpdate() is important because it locks the row until save
+  // // https://github.com/lffg-archive/adonisjs-lucid-hooks-race-condition-problem/pull/1/files
+  // // https://github.com/adonisjs/lucid/issues/542
   // await User.query().where('id', 1).forUpdate().firstOrFail();
   // user.username = 'asdf'
   // awit user.save();

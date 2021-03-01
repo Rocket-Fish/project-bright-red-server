@@ -32,11 +32,7 @@ export default class EventsController {
         ]),
         numberOfParties: schema.enum([1, 3, 6, 7] as const),
         maxPlayersInQueue: schema.number([rules.range(8, 128)]),
-        eventTime: schema.date({}, [
-          rules.after(1, "second"),
-          rules.beforeField(DateTime.utc().plus({ days: 14 }).toISO()),
-        ]),
-        autoFormParty: schema.boolean(),
+        eventTime: schema.date({}, [rules.after(1, "second")]),
         timeZone: schema.string(),
       }),
     });
@@ -99,6 +95,11 @@ export default class EventsController {
       }
     }
     return response.notFound({ errors: [{ code: 404, message: "Not Found" }] });
+  }
+
+  public async formParty(context: HttpContextContract) {
+    const { response } = context;
+    return response.ok("OK");
   }
 
   public async myEvents(context: HttpContextContract) {

@@ -22,9 +22,6 @@ export default class Event extends BaseModel {
   public eventTime: DateTime;
 
   @column()
-  public autoFormParty: boolean;
-
-  @column()
   public timeZone: string;
 
   @hasMany(() => Candidate, {
