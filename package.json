@@ -6,7 +6,7 @@
     "build": "node ace build --production",
     "start": "node server.js",
     "seed": "node ace db:seed",
-    "migration": "node ace migration:run -f",
+    "migration": "node ace migration:run --force",
     "dev": "node ace serve --watch",
     "heroku-postbuild": "npm run migration && npm run seed",
     "lint": "eslint . --ext=.ts"
