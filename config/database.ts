@@ -42,7 +42,10 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
         user: Env.get("DB_USER", "lucid") as string,
         password: Env.get("DB_PASSWORD", "lucid") as string,
         database: Env.get("DB_NAME", "lucid") as string,
-        ssl: true,
+        ssl:
+          Env.get("NODE_ENV", "development") === "production"
+            ? { rejectUnauthorized: false }
+            : false,
       },
       healthCheck: false,
       debug: false,
