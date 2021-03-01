@@ -5,7 +5,6 @@ import Event from "App/Models/Event";
 import uniqueString from "unique-string";
 import User from "App/Models/User";
 import Party from "App/Models/Party";
-import { DateTime } from "luxon";
 
 export default class EventsController {
   public async index() {
@@ -73,33 +72,18 @@ export default class EventsController {
     });
     const event = await Event.query()
       .where("url", url)
+      .preload("organizer")
       .preload("queue")
-      .preload("parties")
+      .preload("parties", (query) =>
+        query.preload("candidates", (query) => query.preload("user"))
+      )
       .first();
-    if (!!event) {
-      const organizer = await User.find(event.organizerId);
-      if (!!organizer) {
-        const serialized = organizer.serialize({
-          fields: {
-            omit: [
-              "created_at",
-              "updated_at",
-              "organized_events",
-              "candidacy",
-              "remember_me_token",
-              "username",
-            ],
-          },
-        });
-        return { ...event.toJSON(), organizer: serialized };
-      }
+    if (!event) {
+      return response.notFound({
+        errors: [{ code: 404, message: "Not Found" }],
+      });
     }
-    return response.notFound({ errors: [{ code: 404, message: "Not Found" }] });
-  }
-
-  public async formParty(context: HttpContextContract) {
-    const { response } = context;
-    return response.ok("OK");
+    return event;
   }
 
   public async myEvents(context: HttpContextContract) {

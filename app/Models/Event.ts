@@ -1,7 +1,15 @@
 import { DateTime } from "luxon";
-import { BaseModel, column, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  hasMany,
+  HasMany,
+} from "@ioc:Adonis/Lucid/Orm";
 import Candidate from "./Candidate";
 import Party from "./Party";
+import User from "./User";
 
 export default class Event extends BaseModel {
   public static table = "events";
@@ -34,6 +42,11 @@ export default class Event extends BaseModel {
 
   @column()
   public organizerId: number;
+
+  @belongsTo(() => User, {
+    foreignKey: "organizerId",
+  })
+  public organizer: BelongsTo<typeof User>;
 
   @column()
   public url: string;

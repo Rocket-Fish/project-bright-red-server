@@ -14,7 +14,7 @@ export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
-  @column()
+  @column({ serializeAs: null })
   public username: string;
 
   @column({ serializeAs: null })
@@ -23,21 +23,22 @@ export default class User extends BaseModel {
   @column()
   public displayName: string;
 
-  @column()
+  @column({ serializeAs: null })
   public rememberMeToken?: string;
 
-  @hasMany(() => Candidate)
+  @hasMany(() => Candidate, { serializeAs: null })
   public candidacy: HasMany<typeof Candidate>; // candidates are basically Q positions
 
   @hasMany(() => Event, {
     foreignKey: "organizerId",
+    serializeAs: null,
   })
   public organizedEvents: HasMany<typeof Event>; // events which this person organized (is admin for)
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: null })
   public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   public updatedAt: DateTime;
 
   @beforeSave()
