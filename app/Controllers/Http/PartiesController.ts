@@ -32,7 +32,7 @@ export default class PartiesController {
   }
 
   public async formParty(context: HttpContextContract) {
-    const { response, auth, request } = context;
+    const { auth, request } = context;
     await auth.authenticate();
     const user = auth.user;
     if (!user) return this.returnInvalidUser(context);
