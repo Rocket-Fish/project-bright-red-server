@@ -42,6 +42,8 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
         user: Env.get("DB_USER", "lucid") as string,
         password: Env.get("DB_PASSWORD", "lucid") as string,
         database: Env.get("DB_NAME", "lucid") as string,
+        // https://stackoverflow.com/questions/61097695/self-signed-certificate-error-during-query-the-heroku-hosted-postgres-database
+        // this fixes the self signed certificate problem
         ssl:
           Env.get("NODE_ENV", "development") === "production"
             ? { rejectUnauthorized: false }
