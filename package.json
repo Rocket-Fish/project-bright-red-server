@@ -8,7 +8,7 @@
     "seed": "node ace db:seed",
     "migration": "node ace migration:run --force",
     "dev": "node ace serve --watch",
-    "heroku-postbuild": "npm run migration && npm run seed",
+    "heroku-postbuild": "npm run migration && npm run seed && npm run build",
     "lint": "eslint . --ext=.ts"
   },
   "devDependencies": {
