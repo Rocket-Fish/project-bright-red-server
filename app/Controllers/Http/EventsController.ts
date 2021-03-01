@@ -73,9 +73,11 @@ export default class EventsController {
     const event = await Event.query()
       .where("url", url)
       .preload("organizer")
-      .preload("queue")
+      .preload("queue", (query) => query.orderBy("id"))
       .preload("parties", (query) =>
-        query.preload("candidates", (query) => query.preload("user"))
+        query
+          .preload("candidates", (query) => query.preload("user"))
+          .orderBy("id")
       )
       .first();
     if (!event) {

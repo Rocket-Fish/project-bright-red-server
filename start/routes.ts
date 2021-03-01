@@ -26,7 +26,7 @@ Route.get("/", async () => {
 });
 
 // events
-Route.get("events/all", "EventsController.index"); // TODO: comment out for dev/admin use only
+// Route.get("events/all", "EventsController.index"); // TODO: comment out for dev/admin use only
 Route.get("events/mine", "EventsController.myEvents");
 Route.get("event", "EventsController.getEvent");
 Route.post("event", "EventsController.create");
