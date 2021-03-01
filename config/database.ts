@@ -23,6 +23,20 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   connection: Env.get("DB_CONNECTION"),
 
   connections: {
+    ...(Env.get("NODE_ENV", "development") === "production" && {
+      mysql: {
+        client: "mysql",
+        connection: {
+          host: Env.get("DB_HOST", "127.0.0.1") as string,
+          port: Number(Env.get("DB_PORT", 3306)),
+          user: Env.get("DB_USER", "lucid") as string,
+          password: Env.get("DB_PASSWORD", "lucid") as string,
+          database: Env.get("DB_NAME", "lucid") as string,
+        },
+        healthCheck: false,
+      },
+    }),
+
     /*
     |--------------------------------------------------------------------------
     | PostgreSQL config
@@ -34,19 +48,21 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
     | npm i pg
     |
     */
-    pg: {
-      client: "pg",
-      connection: {
-        host: Env.get("DB_HOST", "127.0.0.1") as string,
-        port: Number(Env.get("DB_PORT", 5432)),
-        user: Env.get("DB_USER", "lucid") as string,
-        password: Env.get("DB_PASSWORD", "lucid") as string,
-        database: Env.get("DB_NAME", "lucid") as string,
-        // ssl: Env.get("NODE_ENV", "development") === "production",
+    ...(Env.get("NODE_ENV", "development") === "development" && {
+      pg: {
+        client: "pg",
+        connection: {
+          host: Env.get("DB_HOST", "127.0.0.1") as string,
+          port: Number(Env.get("DB_PORT", 5432)),
+          user: Env.get("DB_USER", "lucid") as string,
+          password: Env.get("DB_PASSWORD", "lucid") as string,
+          database: Env.get("DB_NAME", "lucid") as string,
+          // ssl: Env.get("NODE_ENV", "development") === "production",
+        },
+        healthCheck: false,
+        debug: false,
       },
-      healthCheck: false,
-      debug: false,
-    },
+    }),
   },
 
   /*
