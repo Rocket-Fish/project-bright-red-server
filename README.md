@@ -1,4 +1,4 @@
-# project-bright-red-server
+# xivQueue
 
 Note This project is only really using docker for setting up an easy postgres DB, run app outside of docker for best dev experience
 

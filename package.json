@@ -1,11 +1,12 @@
 {
-  "name": "project-bright-red-server",
+  "name": "xiv-queue",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "node ace build --production",
     "start": "node dist/server.js",
     "seed": "node ace db:seed",
+    "routes": "node ace list:routes",
     "migration": "node ace migration:run --force",
     "dev": "node ace serve --watch",
     "lint": "eslint . --ext=.ts"

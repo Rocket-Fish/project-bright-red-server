@@ -7,11 +7,6 @@ import User from "App/Models/User";
 import Party from "App/Models/Party";
 
 export default class EventsController {
-  public async index() {
-    const events = await Event.all();
-    return events;
-  }
-
   public returnInvalidUser({ response }: HttpContextContract) {
     return response.badRequest({
       errors: [{ message: "JWT provided invalid username" }],
