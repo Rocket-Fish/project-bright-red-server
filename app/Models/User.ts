@@ -26,6 +26,12 @@ export default class User extends BaseModel {
   @column({ serializeAs: null })
   public rememberMeToken?: string;
 
+  @column({ serializeAs: null })
+  public notAnon?: boolean;
+
+  @column({ serializeAs: null })
+  public lastActive?: DateTime;
+
   @hasMany(() => Candidate)
   public candidacy: HasMany<typeof Candidate>; // candidates are basically Q positions
 

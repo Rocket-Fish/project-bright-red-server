@@ -1,6 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 import User from "App/Models/User";
+import { DateTime } from "luxon";
 
 export default class AuthController {
   public async register({ request, auth }: HttpContextContract) {
@@ -23,6 +24,8 @@ export default class AuthController {
     user.username = username;
     user.password = password;
     user.displayName = displayName;
+    user.lastActive = DateTime.now();
+    user.notAnon = false;
     await user.save();
 
     const token = await auth
@@ -36,6 +39,11 @@ export default class AuthController {
     const token = await auth
       .use("api")
       .attempt(username, password, { expiresIn: "14 days" });
+    const user = auth.user;
+    if (user) {
+      user.lastActive = DateTime.now();
+      await user.save();
+    }
     return { ...token.toJSON() };
   }
 
