@@ -21,7 +21,7 @@ export default class EventsController {
 
     const validated = await request.validate({
       schema: schema.create({
-        name: schema.string({ escape: true, trim: true }, [rules.maxLength(50)]),
+        name: schema.string({ escape: false, trim: true }, [rules.maxLength(50)]),
         numberOfParties: schema.enum([1, 3, 6, 7] as const),
         maxPlayersInQueue: schema.number([rules.range(8, 128)]),
         eventTime: schema.date({}, [rules.after(1, "second")]),
@@ -47,7 +47,7 @@ export default class EventsController {
   public async getEventQuick({ request }: HttpContextContract) {
     const { url } = await request.validate({
       schema: schema.create({
-        url: schema.string({ escape: true }),
+        url: schema.string({ escape: false }),
       }),
     });
     const event = await Event.query().where("url", url).first();
@@ -57,7 +57,7 @@ export default class EventsController {
   public async getEvent({ request, response }: HttpContextContract) {
     const { url } = await request.validate({
       schema: schema.create({
-        url: schema.string({ escape: true }),
+        url: schema.string({ escape: false }),
       }),
     });
     const event = await Event.query()
