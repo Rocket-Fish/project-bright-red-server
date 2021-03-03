@@ -49,3 +49,6 @@ Route.group(() => {
     return report.healthy ? response.ok(report) : response.badRequest(report);
   });
 });
+Route.get("*", async ({ response }) => {
+  return response.notFound(404);
+});
