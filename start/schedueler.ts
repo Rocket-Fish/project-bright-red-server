@@ -4,6 +4,7 @@ import Event from "App/Models/Event";
 import { DateTime } from "luxon";
 
 const rule = new schedule.RecurrenceRule();
+rule.minute = 1;
 rule.hour = 1;
 
 // currently once every hour

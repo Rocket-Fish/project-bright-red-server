@@ -25,6 +25,7 @@ Route.group(() => {
   // events
   Route.get("events/mine", "EventsController.myEvents");
   Route.group(() => {
+    Route.get("quick", "EventsController.getEventQuick");
     Route.get("", "EventsController.getEvent");
     Route.post("", "EventsController.create");
     // event queues

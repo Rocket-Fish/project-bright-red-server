@@ -21,9 +21,7 @@ export default class EventsController {
 
     const validated = await request.validate({
       schema: schema.create({
-        name: schema.string({ escape: true, trim: true }, [
-          rules.maxLength(50),
-        ]),
+        name: schema.string({ escape: true, trim: true }, [rules.maxLength(50)]),
         numberOfParties: schema.enum([1, 3, 6, 7] as const),
         maxPlayersInQueue: schema.number([rules.range(8, 128)]),
         eventTime: schema.date({}, [rules.after(1, "second")]),
@@ -35,28 +33,25 @@ export default class EventsController {
       url: uniqueString(),
     });
     const partiesToBeCreated = [] as Party[];
-    for (
-      let partyNumber = 1;
-      partyNumber <= validated.numberOfParties;
-      partyNumber++
-    ) {
+    for (let partyNumber = 1; partyNumber <= validated.numberOfParties; partyNumber++) {
       partiesToBeCreated.push({
         partyNumber,
-        partyComp: JSON.stringify([
-          "tank",
-          "tank",
-          "healer",
-          "healer",
-          "melee",
-          "melee",
-          "ranged",
-          "caster",
-        ]), // hard coded value TODO: change later
+        partyComp: JSON.stringify(["tank", "tank", "healer", "healer", "melee", "melee", "ranged", "caster"]), // hard coded value TODO: change later
       } as Party);
     }
     await event.related("parties").createMany(partiesToBeCreated);
 
     return event.serialize({ fields: ["url"] });
+  }
+
+  public async getEventQuick({ request }: HttpContextContract) {
+    const { url } = await request.validate({
+      schema: schema.create({
+        url: schema.string({ escape: true }),
+      }),
+    });
+    const event = await Event.query().where("url", url).first();
+    return event;
   }
 
   public async getEvent({ request, response }: HttpContextContract) {
@@ -69,11 +64,7 @@ export default class EventsController {
       .where("url", url)
       .preload("organizer")
       .preload("queue", (query) => query.orderBy("id"))
-      .preload("parties", (query) =>
-        query
-          .preload("candidates", (query) => query.preload("user"))
-          .orderBy("id")
-      )
+      .preload("parties", (query) => query.preload("candidates", (query) => query.preload("user")).orderBy("id"))
       .first();
     if (!event) {
       return response.notFound({
@@ -92,9 +83,7 @@ export default class EventsController {
     await user.preload("organizedEvents");
     const fullUserObject = await User.query()
       .where("id", user.id)
-      .preload("candidacy", (query) =>
-        query.preload("event", (query) => query.preload("organizer"))
-      )
+      .preload("candidacy", (query) => query.preload("event", (query) => query.preload("organizer")))
       .preload("organizedEvents", (query) => query.preload("organizer"))
       .firstOrFail();
     const { organizedEvents, candidacy } = fullUserObject;
