@@ -21,34 +21,34 @@
 import Route from "@ioc:Adonis/Core/Route";
 import HealthCheck from "@ioc:Adonis/Core/HealthCheck";
 
-Route.get("/", async () => {
-  return { hello: "world" };
+Route.group(() => {
+  // events
+  Route.get("events/mine", "EventsController.myEvents");
+  Route.group(() => {
+    Route.get("", "EventsController.getEvent");
+    Route.post("", "EventsController.create");
+    // event queues
+    Route.get("queue", "QueuesController.status"); // queue status
+    Route.post("queue", "QueuesController.join"); // register queue
+    Route.delete("queue", "QueuesController.leave"); // remove self from quue
+    // party organization
+    Route.post("party", "PartiesController.formParty");
+  }).prefix("/event");
+
+  // auth
+  Route.post("register", "AuthController.register");
+  Route.post("login", "AuthController.login");
+  Route.post("check", "AuthController.authCheck");
+
+  // roles
+  Route.get("/roles", "RolesController.index");
+
+  // health
+  Route.get("health", async ({ response }) => {
+    const report = await HealthCheck.getReport();
+    return report.healthy ? response.ok(report) : response.badRequest(report);
+  });
 });
-
-// events
-// Route.get("events/all", "EventsController.index"); // TODO: comment out for dev/admin use only
-Route.get("events/mine", "EventsController.myEvents");
-Route.get("event", "EventsController.getEvent");
-Route.post("event", "EventsController.create");
-
-Route.get("event/queue", "QueuesController.status"); // queue status
-Route.post("event/queue", "QueuesController.join"); // register queue
-Route.delete("event/queue", "QueuesController.leave"); // remove self from quue
-
-Route.post("event/party", "PartiesController.formParty");
-
-// auth
-Route.post("register", "AuthController.register");
-Route.post("login", "AuthController.login");
-Route.post("check", "AuthController.authCheck");
-
-// roles
-Route.get("/roles", "RolesController.index");
-
-// health
-Route.get("health", async ({ response }) => {
-  const report = await HealthCheck.getReport();
-
-  return report.healthy ? response.ok(report) : response.badRequest(report);
-  // return response.badRequest(report);
+Route.get("*", async ({ response }) => {
+  return response.notFound(404);
 });
