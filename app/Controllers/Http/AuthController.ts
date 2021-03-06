@@ -7,16 +7,9 @@ export default class AuthController {
   public async register({ request, auth }: HttpContextContract) {
     const { username, password, displayName } = await request.validate({
       schema: schema.create({
-        username: schema.string({ trim: true }, [
-          rules.unique({ table: "users", column: "username" }),
-          rules.minLength(2),
-          rules.maxLength(200),
-        ]),
+        username: schema.string({ trim: true }, [rules.unique({ table: "users", column: "username" }), rules.minLength(2), rules.maxLength(200)]),
         password: schema.string({ trim: true }),
-        displayName: schema.string({ trim: true }, [
-          rules.minLength(2),
-          rules.maxLength(200),
-        ]),
+        displayName: schema.string({ trim: true }, [rules.minLength(2), rules.maxLength(200)]),
       }),
     });
 
@@ -28,24 +21,22 @@ export default class AuthController {
     user.notAnon = false;
     await user.save();
 
-    const token = await auth
-      .use("api")
-      .attempt(username, password, { expiresIn: "14 days" });
+    const token = await auth.use("api").attempt(username, password);
     return { ...token.toJSON(), id: user.id };
   }
-  public async login({ request, auth }: HttpContextContract) {
-    const username = request.input("username");
-    const password = request.input("password");
-    const token = await auth
-      .use("api")
-      .attempt(username, password, { expiresIn: "14 days" });
-    const user = auth.user;
-    if (user) {
-      user.lastActive = DateTime.now();
-      await user.save();
-    }
-    return { ...token.toJSON() };
-  }
+  // public async login({ request, auth }: HttpContextContract) {
+  //   const username = request.input("username");
+  //   const password = request.input("password");
+  //   const token = await auth
+  //     .use("api")
+  //     .attempt(username, password;
+  //   const user = auth.user;
+  //   if (user) {
+  //     user.lastActive = DateTime.now();
+  //     await user.save();
+  //   }
+  //   return { ...token.toJSON() };
+  // }
 
   public async authCheck({ response, auth }: HttpContextContract) {
     await auth.authenticate();

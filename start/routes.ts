@@ -38,7 +38,7 @@ Route.group(() => {
 
   // auth
   Route.post("register", "AuthController.register");
-  Route.post("login", "AuthController.login");
+  // Route.post("login", "AuthController.login");
   Route.post("check", "AuthController.authCheck");
 
   // roles

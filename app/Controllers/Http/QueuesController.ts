@@ -21,11 +21,7 @@ export default class QueuesController {
     if (!event) {
       return this.returnInvalidEvent(context);
     }
-    const candidacy = await event
-      .related("queue")
-      .query()
-      .where("userId", user.id)
-      .first();
+    const candidacy = await event.related("queue").query().where("userId", user.id).first();
 
     if (!candidacy) {
       return response.notFound({
@@ -51,9 +47,7 @@ export default class QueuesController {
     const validated = await request.validate({
       schema: schema.create({
         forEvent: schema.number([rules.required(), rules.unsigned()]),
-        roles: schema.string({ escape: false, trim: false }, [
-          rules.required(),
-        ]),
+        roles: schema.string({ escape: false, trim: false }, [rules.required()]),
       }),
     });
     // parse json and validate role manually // database row saving
@@ -79,15 +73,21 @@ export default class QueuesController {
       });
     }
     // build relationship time
-    const event = await Event.find(validated.forEvent);
+    const event = await Event.query().where("id", validated.forEvent).preload("queue").first();
     if (!event) {
       return this.returnInvalidEvent(context);
     }
-    const existingCandidacy = await event
-      .related("queue")
-      .query()
-      .where("userId", user.id)
-      .first();
+    if (event.maxPlayersInQueue <= event.queue.length) {
+      return response.notAcceptable({
+        errors: [
+          {
+            field: "roles",
+            message: "Queue limit reached",
+          },
+        ],
+      });
+    }
+    const existingCandidacy = await event.related("queue").query().where("userId", user.id).first();
     if (existingCandidacy) {
       return response.badRequest({
         errors: [

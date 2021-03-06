@@ -50,7 +50,7 @@ export default class EventsController {
         url: schema.string({ escape: false }),
       }),
     });
-    const event = await Event.query().where("url", url).first();
+    const event = await Event.query().where("url", url).firstOrFail();
     return event;
   }
 
