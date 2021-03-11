@@ -14,6 +14,7 @@ const initOutdatedEventsCleanup = () => {
   const rule = new schedule.RecurrenceRule();
   rule.minute = 1;
   rule.hour = 13;
+  // this triggers 1pm UTC (8am EST)
 
   // currently once every hour
   schedule.scheduleJob(rule, async () => {
@@ -42,6 +43,7 @@ const initInactiveUserCleanup = () => {
   const rule = new schedule.RecurrenceRule();
   rule.minute = 1;
   rule.hour = 14;
+  // this triggers 2pm UTC (9am EST)
 
   schedule.scheduleJob(rule, async () => {
     console.log("Those who dwell in the past does not see the future;");
