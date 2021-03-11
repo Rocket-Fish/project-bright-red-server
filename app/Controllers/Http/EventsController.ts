@@ -18,6 +18,7 @@ export default class EventsController {
         numberOfParties: schema.enum([1, 3, 6, 7] as const),
         maxPlayersInQueue: schema.number([rules.range(8, 128)]),
         eventTime: schema.date({}, [rules.after(1, "second")]),
+        autoFormParty: schema.boolean([rules.required()]),
         timeZone: schema.string(),
       }),
     });

@@ -1,12 +1,5 @@
 import { DateTime } from "luxon";
-import {
-  BaseModel,
-  BelongsTo,
-  belongsTo,
-  column,
-  hasMany,
-  HasMany,
-} from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, BelongsTo, belongsTo, column, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
 import Candidate from "./Candidate";
 import Party from "./Party";
 import User from "./User";
@@ -42,6 +35,9 @@ export default class Event extends BaseModel {
 
   @column()
   public organizerId: number;
+
+  @column()
+  public autoFormParty: boolean;
 
   @belongsTo(() => User, {
     foreignKey: "organizerId",
