@@ -7,9 +7,7 @@ import Role from "App/Models/Role";
 export default class QueuesController {
   public async status(context: HttpContextContract) {
     const { response, auth, request } = context;
-    await auth.authenticate();
-    const user = auth.user;
-    if (!user) return this.returnInvalidUser(context);
+    const user = await auth.authenticate();
 
     const validated = await request.validate({
       schema: schema.create({
@@ -40,9 +38,7 @@ export default class QueuesController {
   public async join(context: HttpContextContract) {
     const { response, auth, request } = context;
 
-    await auth.authenticate();
-    const user = auth.user;
-    if (!user) return this.returnInvalidUser(context);
+    const user = await auth.authenticate();
 
     const validated = await request.validate({
       schema: schema.create({
@@ -104,9 +100,7 @@ export default class QueuesController {
   }
   public async leave(context: HttpContextContract) {
     const { response, auth, request } = context;
-    await auth.authenticate();
-    const user = auth.user;
-    if (!user) return this.returnInvalidUser(context);
+    const user = await auth.authenticate();
 
     const validated = await request.validate({
       schema: schema.create({
@@ -121,11 +115,6 @@ export default class QueuesController {
     await event.related("queue").query().where("userId", user.id).delete();
 
     return response.ok("OK");
-  }
-  public returnInvalidUser({ response }: HttpContextContract) {
-    return response.badRequest({
-      errors: [{ message: "JWT provided invalid username" }],
-    });
   }
   public returnInvalidEvent({ response }: HttpContextContract) {
     return response.badRequest({

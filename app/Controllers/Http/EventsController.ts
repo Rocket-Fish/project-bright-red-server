@@ -5,19 +5,12 @@ import Event from "App/Models/Event";
 import uniqueString from "unique-string";
 import User from "App/Models/User";
 import Party from "App/Models/Party";
+import { DateTime } from "luxon";
 
 export default class EventsController {
-  public returnInvalidUser({ response }: HttpContextContract) {
-    return response.badRequest({
-      errors: [{ message: "JWT provided invalid username" }],
-    });
-  }
-
   public async create(context: HttpContextContract) {
     const { request, auth } = context;
-    await auth.authenticate();
-    const user = auth.user;
-    if (!user) return this.returnInvalidUser(context);
+    const user = await auth.authenticate();
 
     const validated = await request.validate({
       schema: schema.create({
@@ -54,12 +47,21 @@ export default class EventsController {
     return event;
   }
 
-  public async getEvent({ request, response }: HttpContextContract) {
+  public async getEvent({ request, response, auth }: HttpContextContract) {
     const { url } = await request.validate({
       schema: schema.create({
         url: schema.string({ escape: false }),
       }),
     });
+    // this route doesn't actually requires authentication
+    // this route only really bumps the authenticated user's last active point so they don't get deleted
+    try {
+      const user = await auth.authenticate();
+      user.lastActive = DateTime.now();
+      await user.save();
+    } catch (e) {
+      // do nothing, everything normal
+    }
     const event = await Event.query()
       .where("url", url)
       .preload("organizer")
@@ -76,9 +78,8 @@ export default class EventsController {
 
   public async myEvents(context: HttpContextContract) {
     const { auth } = context;
-    await auth.authenticate();
-    const user = auth.user;
-    if (!user) return this.returnInvalidUser(context);
+
+    const user = await auth.authenticate();
 
     await user.preload("organizedEvents");
     const fullUserObject = await User.query()

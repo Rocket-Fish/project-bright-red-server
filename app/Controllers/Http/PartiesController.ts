@@ -4,12 +4,6 @@ import Candidate from "App/Models/Candidate";
 import Event from "App/Models/Event";
 
 export default class PartiesController {
-  public returnInvalidUser({ response }: HttpContextContract) {
-    return response.badRequest({
-      errors: [{ message: "JWT provided invalid username" }],
-    });
-  }
-
   public returnInvalidEvent({ response }: HttpContextContract) {
     return response.badRequest({
       errors: [
@@ -33,9 +27,7 @@ export default class PartiesController {
 
   public async formParty(context: HttpContextContract) {
     const { auth, request } = context;
-    await auth.authenticate();
-    const user = auth.user;
-    if (!user) return this.returnInvalidUser(context);
+    const user = await auth.authenticate();
 
     const validated = await request.validate({
       schema: schema.create({
@@ -49,17 +41,12 @@ export default class PartiesController {
       .preload("organizer")
 
       .preload("queue", (query) => query.orderBy("id"))
-      .preload("parties", (query) =>
-        query
-          .preload("candidates", (query) => query.preload("user"))
-          .orderBy("id")
-      )
+      .preload("parties", (query) => query.preload("candidates", (query) => query.preload("user")).orderBy("id"))
       .first();
 
     if (!event) return this.returnInvalidEvent(context);
 
-    if (event.organizerId !== user.id)
-      return this.returnInvalidOrganizer(context);
+    if (event.organizerId !== user.id) return this.returnInvalidOrganizer(context);
 
     const parties = event.parties;
     const candidates = event.queue;
@@ -75,10 +62,7 @@ export default class PartiesController {
             if (isGoodFit) {
               candidate.activeRole = role;
               await party.related("candidates").save(candidate);
-              const remappedCandidate = await Candidate.query()
-                .where("id", candidate.id)
-                .preload("user")
-                .firstOrFail();
+              const remappedCandidate = await Candidate.query().where("id", candidate.id).preload("user").firstOrFail();
               party.candidates.push(remappedCandidate);
 
               break;
