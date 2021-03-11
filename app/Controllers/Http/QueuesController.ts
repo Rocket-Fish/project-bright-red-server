@@ -3,6 +3,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 import Event from "App/Models/Event";
 import Role from "App/Models/Role";
+import Ws from "App/Services/Ws";
 
 export default class QueuesController {
   public async status(context: HttpContextContract) {
@@ -96,6 +97,9 @@ export default class QueuesController {
     const candidate = await event.related("queue").create(validated);
     user.related("candidacy").save(candidate);
 
+    // emit this event via websocket to everyone in the event room
+    Ws.io.in(event.url).emit("joined-queue", candidate);
+
     return candidate;
   }
   public async leave(context: HttpContextContract) {
@@ -112,7 +116,10 @@ export default class QueuesController {
     if (!event) {
       return this.returnInvalidEvent(context);
     }
-    await event.related("queue").query().where("userId", user.id).delete();
+    const candidate = await event.related("queue").query().where("userId", user.id).firstOrFail();
+
+    Ws.io.in(event.url).emit("left-queue", candidate);
+    await candidate.delete();
 
     return response.ok("OK");
   }
