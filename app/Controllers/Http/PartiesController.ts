@@ -1,7 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
-import Candidate from "App/Models/Candidate";
 import Event from "App/Models/Event";
+import { algorithm1 } from "App/Services/PartyAlgorithms";
 
 export default class PartiesController {
   public returnInvalidEvent({ response }: HttpContextContract) {
@@ -48,30 +48,6 @@ export default class PartiesController {
 
     if (event.organizerId !== user.id) return this.returnInvalidOrganizer(context);
 
-    const parties = event.parties;
-    const candidates = event.queue;
-
-    for (let i = 0; i < parties.length; i++) {
-      const party = parties[i];
-      const roles = JSON.parse(party.partyComp);
-      for (const role of roles) {
-        for (const candidate of candidates) {
-          if (candidate.partyId === null && candidate.activeRole === null) {
-            // search if current required role is in candidate's role
-            const isGoodFit = JSON.stringify(candidate.roles).includes(role);
-            if (isGoodFit) {
-              candidate.activeRole = role;
-              await party.related("candidates").save(candidate);
-              const remappedCandidate = await Candidate.query().where("id", candidate.id).preload("user").firstOrFail();
-              party.candidates.push(remappedCandidate);
-
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    return event;
+    return await algorithm1(event);
   }
 }

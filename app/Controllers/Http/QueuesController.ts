@@ -3,6 +3,8 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 import Event from "App/Models/Event";
 import Role from "App/Models/Role";
+import Ws from "App/Services/Ws";
+import PartyFormation from "App/Services/PartyFormation";
 
 export default class QueuesController {
   public async status(context: HttpContextContract) {
@@ -96,6 +98,11 @@ export default class QueuesController {
     const candidate = await event.related("queue").create(validated);
     user.related("candidacy").save(candidate);
 
+    // emit this event via websocket to everyone in the event room
+    Ws.io.in(event.url).emit("joined-queue", candidate);
+    if (event.autoFormParty) {
+      PartyFormation.queueFormParty(event.id);
+    }
     return candidate;
   }
   public async leave(context: HttpContextContract) {
@@ -112,8 +119,13 @@ export default class QueuesController {
     if (!event) {
       return this.returnInvalidEvent(context);
     }
-    await event.related("queue").query().where("userId", user.id).delete();
+    const candidate = await event.related("queue").query().where("userId", user.id).firstOrFail();
+    await candidate.delete();
 
+    Ws.io.in(event.url).emit("left-queue", candidate);
+    if (event.autoFormParty) {
+      PartyFormation.queueFormParty(event.id);
+    }
     return response.ok("OK");
   }
   public returnInvalidEvent({ response }: HttpContextContract) {
