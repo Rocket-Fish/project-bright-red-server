@@ -18,14 +18,14 @@ export default class AppProvider {
     // App is ready
     // main() here
 
-    await import("../start/schedueler");
-
     /**
      * Only import socket file, when environment is `web`. In other
      * words do not import during ace commands.
      */
     if (App.default.environment === "web") {
+      await import("../start/schedueler");
       await import("../start/socket");
+      await import("../start/partyFormer");
     }
   }
 

@@ -22,10 +22,10 @@ export default class Candidate extends BaseModel {
   // just match roles before writing to json string
 
   @column()
-  public activeRole: string; // this would contain current active role of this candidate, should only be populated if in party
+  public activeRole?: string; // this would contain current active role of this candidate, should only be populated if in party
 
   @column()
-  public partyId: number;
+  public partyId?: number;
 
   @column()
   public userId: number;
