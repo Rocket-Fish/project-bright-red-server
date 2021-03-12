@@ -1,18 +1,18 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import uniqueString from "unique-string";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 import User from "App/Models/User";
 import { DateTime } from "luxon";
 
 export default class AuthController {
   public async register({ request, auth }: HttpContextContract) {
-    const { username, password, displayName } = await request.validate({
+    const { displayName } = await request.validate({
       schema: schema.create({
-        username: schema.string({ trim: true }, [rules.unique({ table: "users", column: "username" }), rules.minLength(2), rules.maxLength(200)]),
-        password: schema.string({ trim: true }),
         displayName: schema.string({ trim: true }, [rules.minLength(2), rules.maxLength(200)]),
       }),
     });
 
+    const [username, password] = [`anon-${uniqueString()}`, `anon-${uniqueString()}`];
     const user = new User();
     user.username = username;
     user.password = password;
